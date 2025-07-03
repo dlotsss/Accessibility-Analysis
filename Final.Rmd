@@ -26,7 +26,7 @@ mem.maxVSize()
 Using these, I deleted previous variables and other stuff that I had from other files because there was no enough space for the new data set. 
 
 ```{r}
-vehicles = read.csv("~/Downloads/algoritmika/python pro 1 year/Дасаева София PP/Learning_R/Stanford/ShortProject/Vehicles.csv", na = c("", "NA"))
+vehicles = read.csv("~/Downloads/Accessibility-Analysis/Vehicles.csv", na = c("", "NA"))
 dim(vehicles)
 ```
 
@@ -292,7 +292,10 @@ vehicles$Wheelchair.Accessible<- ifelse(
 
 vehicles.train = vehicles[lines, ]
 vehicles.test = vehicles[-lines, ]
+```
 
+
+```{r}
 vehicles.glm = glm(Wheelchair.Accessible ~ Vehicle.Type, data = vehicles.train, 
                    family = binomial)
 summary(vehicles.glm)
@@ -563,8 +566,11 @@ plot(Vehicle.Model.Year, jitter(Wheelchair.Accessible, amount = 0.05))
 
 Let's now try other methods of predicting the accessibility from the dataset we have. Although logistic regression does pretty well to predict whether the vehicle will be accessible or not, our aim if to check which method is the best for this type of data. 
 
-The next method is KNN
+The next method is KNN. We already have train and test dataset. 
 
+```{r}
+
+```
 
 
 
