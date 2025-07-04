@@ -567,37 +567,39 @@ plot(Vehicle.Model.Year, jitter(Wheelchair.Accessible, amount = 0.05))
 
 Let's now try other methods of predicting the accessibility from the dataset we have. Although logistic regression does pretty well to predict whether the vehicle will be accessible or not, our aim if to check which method is the best for this type of data. 
 
-KNN is not working because I have too many categorical values, therefore I need to use other methods. 
-8.3.1 Fitting Classification Trees
+KNN is not working because I have too many categorical values. Methods like kmeans, classification clustering are more like unsupervised learning, which is not the case that I have, however we can try those out later. 
+
+therefore I need to use other methods:
+Fitting Classification Trees
 
 ```{r}
-library(cluster)
-library(ggdendro)
-library(ggplot2)
-agn1 = agnes(vehicles., metric = "manhattan", diss=FALSE)
+library(rattle)
+library(rpart.plot)
+library(rpart)
+library(randomForest)
 
-d <- dist(vehicles.train)
-hcl <- hclust(d, method = "complete")
-ck = cutree(hcl, k = 3)
-ck = factor(ck)
+tree = rpart(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
+                   + Public.Vehicle.Number + ZIP.Code + CompanyGroup
+                   + RecordsGroup + DatesGroup, data = vehicles.train, method = "class", cp=0.001)
 
-hcd <- as.dendrogram(hcl)
-plot(cut(hcd, h=3)$upper, main="Specific height", hang = -1)
+plot(tree)
+```
 
-ggdendrogram(hcl, rotate = FALSE) +
-  theme(axis.line.y = element_line() )
-
-pca = prcomp(vehicles.train)
-
-veh <- as.data.frame(pca$x)   
-veh$Species <- vehicles.train$Species   
-
-ggplot(data = veh) + 
-  geom_point(mapping = aes(x = PC1, y = PC2, color = ck, shape = vehicles.train$Species))
+```{r}
+fancyRpartPlot(tree, tweak = 1.2, palettes=c("Greens", "Blues"), type=2)
 
 ```
 ```{r}
-plot(vehicles.tree)
+predicted = predict(vehicles.tree, vehicles.train, type = "class")
+table(predicted, train$Survive)
+mean(predicted == train$Survive)
+```
+
+
+```{r}
+predicted = predict(tree, test, type = "class")
+table(predicted, test$Survive)
+mean(predicted == test$Survive)
 ```
 
 
