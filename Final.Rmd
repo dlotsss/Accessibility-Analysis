@@ -16,6 +16,7 @@ In this file, I will utilize all my current knowledge of R to get the most infor
 
 ```{r}
 library(dplyr)
+library(class)
 library(caret)
 library(ggplot2)
 library(repr) 
@@ -566,10 +567,37 @@ plot(Vehicle.Model.Year, jitter(Wheelchair.Accessible, amount = 0.05))
 
 Let's now try other methods of predicting the accessibility from the dataset we have. Although logistic regression does pretty well to predict whether the vehicle will be accessible or not, our aim if to check which method is the best for this type of data. 
 
-The next method is KNN. We already have train and test dataset. 
+KNN is not working because I have too many categorical values, therefore I need to use other methods. 
+8.3.1 Fitting Classification Trees
 
 ```{r}
+library(cluster)
+library(ggdendro)
+library(ggplot2)
+agn1 = agnes(vehicles., metric = "manhattan", diss=FALSE)
 
+d <- dist(vehicles.train)
+hcl <- hclust(d, method = "complete")
+ck = cutree(hcl, k = 3)
+ck = factor(ck)
+
+hcd <- as.dendrogram(hcl)
+plot(cut(hcd, h=3)$upper, main="Specific height", hang = -1)
+
+ggdendrogram(hcl, rotate = FALSE) +
+  theme(axis.line.y = element_line() )
+
+pca = prcomp(vehicles.train)
+
+veh <- as.data.frame(pca$x)   
+veh$Species <- vehicles.train$Species   
+
+ggplot(data = veh) + 
+  geom_point(mapping = aes(x = PC1, y = PC2, color = ck, shape = vehicles.train$Species))
+
+```
+```{r}
+plot(vehicles.tree)
 ```
 
 
