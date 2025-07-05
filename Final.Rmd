@@ -609,7 +609,7 @@ Random Forest
 ```{r}
 library(randomForest)
 set.seed(111)
-my.forest = randomForest(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
+my.forest = randomForest(factor(Wheelchair.Accessible) ~ Vehicle.Type + Status + Vehicle.Model.Year 
                    + Public.Vehicle.Number + ZIP.Code + CompanyGroup
                    + RecordsGroup + DatesGroup, data = vehicles.train, importance = TRUE, ntree = 1000)
 
@@ -617,11 +617,8 @@ varImpPlot(my.forest)
 ```
 From random forest we can see that Vehicle.Model.Year and Public.Vehicle.Number are the most important predictors to predict the acessibility of the vehicle. 
 
-
-
 ```{r}
-
-my_prediction <- predict(my.forest, vehicles.test, type = "class")
+my_prediction <- predict(my.forest, newdata = vehicles.test, type = "class")
 my_solution <- data.frame(Wheelchair.Accessible = vehicles.test$Wheelchair.Accessible,
                           PredictedWA = my_prediction, 
                           row.names = NULL)
@@ -632,8 +629,53 @@ table(my_prediction, vehicles.test$Wheelchair.Accessible)
 mean(my_prediction == vehicles.test$Wheelchair.Accessible, na.rm=TRUE)
 
 #Actual Survival of passengers to compare
-view(vehicles.test$Wheelchair.Accessible)
+```
+Due to too many variables, there is a overfitting in random forest, so the final accuracy of it on test set is only 96%. Here we can eliminate those insignificant and keep the 5 most important Vehicle.Model.Year 
+                   + Public.Vehicle.Number + ZIP.Code + CompanyGroup
+                   + RecordsGroup
 
+```{r}
+set.seed(111)
+my.forest2 = randomForest(factor(Wheelchair.Accessible) ~ Vehicle.Model.Year 
+                   + Public.Vehicle.Number + ZIP.Code + CompanyGroup
+                   + RecordsGroup, data = vehicles.train, importance = TRUE, ntree = 1000)
+
+varImpPlot(my.forest2)
+```
+
+
+```{r}
+
+my_prediction <- predict(my.forest2, newdata = vehicles.test, type = "class")
+my_solution <- data.frame(Wheelchair.Accessible = vehicles.test$Wheelchair.Accessible,
+                          PredictedWA = my_prediction, 
+                          row.names = NULL)
+
+table(my_prediction, vehicles.test$Wheelchair.Accessible)
+
+#Accuracy in the test set
+mean(my_prediction == vehicles.test$Wheelchair.Accessible, na.rm=TRUE)
+
+#Actual Survival of passengers to compare
+
+```
+We can see that the accuracy of this randomForest in comparison to actual test data set results are the most accurate. It it 98% accuracy, which is very impressive. And it is better without extra predictors.  
+
+
+Let's see can we do better? We will now use the SVM model. 
+```{r}
+library(e1071)
+library(caret)
+library(lattice)
+
+svm.model = svm(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
+                   + Public.Vehicle.Number + ZIP.Code + CompanyGroup
+                   + RecordsGroup + DatesGroup, data = vehicles.train, cost = 10)
+
+predict_svm <- predict(model_svm, vehicles.train)
+
+table(predict_svm, vehicles.train$Wheelchair.Accessible)
+mean(predict_svm == vehicles.train$Wheelchair.Accessible, na.rm=TRUE)
 ```
 
 
