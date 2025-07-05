@@ -605,6 +605,36 @@ The accuracy on the test data set is still high, 97.14557%, and it is higher tha
 
 The accuracy of predicting via trees is higher than via logistic regression and it is a good percent, however, we can try other methods to improve the accuracy even more. 
 
+Random Forest
+```{r}
+library(randomForest)
+set.seed(111)
+my.forest = randomForest(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
+                   + Public.Vehicle.Number + ZIP.Code + CompanyGroup
+                   + RecordsGroup + DatesGroup, data = vehicles.train, importance = TRUE, ntree = 1000)
+
+varImpPlot(my.forest)
+```
+From random forest we can see that Vehicle.Model.Year and Public.Vehicle.Number are the most important predictors to predict the acessibility of the vehicle. 
+
+
+
+```{r}
+
+my_prediction <- predict(my.forest, vehicles.test, type = "class")
+my_solution <- data.frame(Wheelchair.Accessible = vehicles.test$Wheelchair.Accessible,
+                          PredictedWA = my_prediction, 
+                          row.names = NULL)
+
+table(my_prediction, vehicles.test$Wheelchair.Accessible)
+
+#Accuracy in the test set
+mean(my_prediction == vehicles.test$Wheelchair.Accessible, na.rm=TRUE)
+
+#Actual Survival of passengers to compare
+view(vehicles.test$Wheelchair.Accessible)
+
+```
 
 
 
