@@ -580,7 +580,7 @@ library(randomForest)
 
 tree = rpart(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
                    + Public.Vehicle.Number + ZIP.Code + CompanyGroup
-                   + RecordsGroup + DatesGroup, data = vehicles.train, method = "class", cp=0.001)
+                   + RecordsGroup + DatesGroup, data = vehicles.train, method = "class", cp=0.00001)
 
 plot(tree)
 ```
@@ -590,17 +590,24 @@ fancyRpartPlot(tree, tweak = 1.2, palettes=c("Greens", "Blues"), type=2)
 
 ```
 ```{r}
-predicted = predict(vehicles.tree, vehicles.train, type = "class")
-table(predicted, train$Survive)
-mean(predicted == train$Survive)
+predicted = predict(tree, vehicles.train, type = "class")
+table(predicted, accessibility.train)
+mean(predicted == accessibility.train)
 ```
-
+The accuracy using the trees is higher, it is 98.04107% on training data set
 
 ```{r}
-predicted = predict(tree, test, type = "class")
-table(predicted, test$Survive)
-mean(predicted == test$Survive)
+predicted = predict(tree, vehicles.test, type = "class")
+table(predicted, accessibility.test)
+mean(predicted == accessibility.test)
 ```
+The accuracy on the test data set is still high, 97.14557%, and it is higher than in logistic regression, but because it is smaller than on testing set, there might be a little overfitting.
+
+The accuracy of predicting via trees is higher than via logistic regression and it is a good percent, however, we can try other methods to improve the accuracy even more. 
+
+
+
+
 
 
 
