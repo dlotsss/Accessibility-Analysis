@@ -664,7 +664,7 @@ library(e1071)
 library(caret)
 library(lattice)
 
-svm.model = svm(factor(Wheelchair.Accessible) ~ Vehicle.Model.Year 
+svm.model = svm((Wheelchair.Accessible ~ Vehicle.Model.Year 
                    + Public.Vehicle.Number + ZIP.Code + CompanyGroup
                    + RecordsGroup, data = vehicles.train, cost = 10)
 
@@ -673,15 +673,16 @@ predict_svm <- predict(svm.model, vehicles.train)
 ```
 
 ```{r}
-#sqrt(mean((vehicles.train$WheelchairAccesible - predict_svm)^2))
+sqrt(mean((vehicles.train$Wheelchair.Accesible - predict_svm)^2))
 
-
+table(predict_svm, vehicles.train$Wheelchair.Accesible)
+mean(predict_svm == vehicles.train$Wheelchair.Accesible)
 ```
 
 
 ```{r}
-predict_svm_test <- predict(model_svm, vehicles.test$WheelchairAccesible) 
-sqrt(mean((Default.test$default - predict_svm_test)^2))
+predict_svm_test <- predict(svm.model, vehicles.test$WheelchairAccesible) 
+sqrt(mean((vehicles.test$WheelchairAccesible - predict_svm_test)^2))
 ```
 
 
