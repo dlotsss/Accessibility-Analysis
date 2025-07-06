@@ -653,11 +653,7 @@ my_solution <- data.frame(Wheelchair.Accessible = vehicles.test$Wheelchair.Acces
 
 table(my_prediction, vehicles.test$Wheelchair.Accessible)
 
-#Accuracy in the test set
 mean(my_prediction == vehicles.test$Wheelchair.Accessible, na.rm=TRUE)
-
-#Actual Survival of passengers to compare
-
 ```
 We can see that the accuracy of this randomForest in comparison to actual test data set results are the most accurate. It it 98% accuracy, which is very impressive. And it is better without extra predictors.  
 
@@ -668,16 +664,25 @@ library(e1071)
 library(caret)
 library(lattice)
 
-svm.model = svm(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
+svm.model = svm(factor(Wheelchair.Accessible) ~ Vehicle.Model.Year 
                    + Public.Vehicle.Number + ZIP.Code + CompanyGroup
-                   + RecordsGroup + DatesGroup, data = vehicles.train, cost = 10)
+                   + RecordsGroup, data = vehicles.train, cost = 10)
 
-predict_svm <- predict(model_svm, vehicles.train)
+predict_svm <- predict(svm.model, vehicles.train)
 
-table(predict_svm, vehicles.train$Wheelchair.Accessible)
-mean(predict_svm == vehicles.train$Wheelchair.Accessible, na.rm=TRUE)
 ```
 
+```{r}
+#sqrt(mean((vehicles.train$WheelchairAccesible - predict_svm)^2))
+
+
+```
+
+
+```{r}
+predict_svm_test <- predict(model_svm, vehicles.test$WheelchairAccesible) 
+sqrt(mean((Default.test$default - predict_svm_test)^2))
+```
 
 
 
