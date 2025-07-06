@@ -706,7 +706,8 @@ roc.svm.df <- data.frame(
 The curve appears to be good. 77.9% is better than random guessing, however previous methods showed better accuracy. 
 
 
-In conclusion, the best accuracy was shown by randomForest model. 
+In conclusion, the best accuracy was shown by randomForest model. Next are trees, logistic regression and svm model. 
+
 
 
 
