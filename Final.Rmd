@@ -664,26 +664,17 @@ library(e1071)
 library(caret)
 library(lattice)
 
-svm.model = svm((Wheelchair.Accessible ~ Vehicle.Model.Year 
+model_svm <- svm(Wheelchair.Accessible ~ Vehicle.Type + Status + Vehicle.Model.Year 
                    + Public.Vehicle.Number + ZIP.Code + CompanyGroup
-                   + RecordsGroup, data = vehicles.train, cost = 10)
-
-predict_svm <- predict(svm.model, vehicles.train)
-
+                   + RecordsGroup + DatesGroup, data = vehicles.train, cost = 10)
+predict_svm <- predict(model_svm, vehicles.train)
 ```
+I created the model using all those significant predicotrs from logistic regression. 
 
 ```{r}
-sqrt(mean((vehicles.train$Wheelchair.Accesible - predict_svm)^2))
-
-table(predict_svm, vehicles.train$Wheelchair.Accesible)
-mean(predict_svm == vehicles.train$Wheelchair.Accesible)
+sqrt(mean((vehicles.train$Wheelchair.Accessible - predict_svm)^2))
 ```
 
-
-```{r}
-predict_svm_test <- predict(svm.model, vehicles.test$WheelchairAccesible) 
-sqrt(mean((vehicles.test$WheelchairAccesible - predict_svm_test)^2))
-```
 
 
 
