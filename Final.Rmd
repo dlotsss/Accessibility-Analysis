@@ -676,6 +676,39 @@ sqrt(mean((vehicles.train$Wheelchair.Accessible - predict_svm)^2))
 ```
 
 
+```{r}
+predict_svm_test <- predict(model_svm, vehicles.test)
+sqrt(mean((vehicles.test$Wheelchair.Accessible - predict_svm_test)^2))
+```
+Those RMSE values are not really good. 
+
+```{r}
+mean(vehicles.test$Wheelchair.Accessible == predict_svm_test)
+```
+
+
+Let's see what will our curve show: 
+
+```{r}
+library("pROC")
+roc.svm <- roc(vehicles.test$Wheelchair.Accessible, predict_svm_test, plot = TRUE, 
+               legacy.axes = TRUE, percent =TRUE, 
+               xlab = "True Positive %", ylab = "False Positive %", 
+               col = "blue", lwd = 4,
+               print.auc = TRUE ) 
+
+roc.svm.df <- data.frame(
+    tpp = roc.svm$sensitivities, #true positive %
+    fpp = (100 - roc.svm$specificities), #false positive %
+    thresholds = roc.svm$thresholds
+)
+```
+The curve appears to be good. 77.9% is better than random guessing, however previous methods showed better accuracy. 
+
+
+In conclusion, the best accuracy was shown by randomForest model. 
+
+
 
 
 
